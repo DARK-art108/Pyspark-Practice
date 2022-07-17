@@ -1,7 +1,4 @@
-from pyspark import SparkContext, SparkConf
-
-conf = SparkConf().setMaster("local").setAppName("My app")
-sc = SparkContext(conf=conf)
+from pyspark import SparkContext
 
 import pyspark
 from pyspark.sql import SparkSession
@@ -10,7 +7,13 @@ from pyspark.ml.feature import VectorAssembler, VectorIndexer
 from pyspark.ml.regression import LinearRegression, RandomForestRegressor
 from pyspark.ml.evaluation import RegressionEvaluator
 
-spark = SparkSession.builder.appName("Pyspark-ml").getOrCreate()
+spark = SparkSession.builder.appName("PysparkExample")\
+    .master("local[*]")\
+    .config ("spark.sql.shuffle.partitions", "50")\
+    .config("spark.driver.maxResultSize","5g")\
+    .config ("spark.sql.execution.arrow.enabled", "true")\
+    .getOrCreate()
+
 dataframe  = spark.read.csv("data/Admission_Prediction.csv", header=True, inferSchema=True)
 dataframe.show()
 
